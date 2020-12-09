@@ -1,8 +1,8 @@
 use wasm_bindgen::prelude::*;
 use web_sys::console;
 
-pub mod client;
-pub use client::Client;
+pub mod app;
+pub use app::App;
 
 // When the `wee_alloc` feature is enabled, this uses `wee_alloc` as the global
 // allocator.
@@ -21,9 +21,13 @@ pub fn main_js() -> Result<(), JsValue> {
     console_error_panic_hook::set_once();
 
     // Your code goes here!
-    unsafe {
-        console::log_1(&JsValue::from_str("Hello world!"));
-    }
 
     Ok(())
+}
+
+#[wasm_bindgen]
+pub fn log(msg: &str) {
+    unsafe {
+        console::log_1(&JsValue::from_str(msg));
+    }
 }

@@ -1,30 +1,29 @@
 import { CONSTANTS, elementIds } from './consts';
 
-const rust = import('../pkg/index.js').catch(console.error);
+const asyncWasm = import('../pkg/index.js').catch(console.error);
 
 const el = document.getElementById(elementIds.rustCanvas);
-function main() {
-  //
-  var lastDrawTime = -1;
+async function main() {
+  const wasm = await asyncWasm;
+  if (wasm) {
+    const rust = await (wasm as any).default;
 
-  const canvas = el as HTMLCanvasElement;
+    var lastDrawTime = -1;
 
-  const gl = canvas?.getContext('webgl', { antialias: true });
+    const canvas = el as HTMLCanvasElement;
 
-  if (gl) {
-    rust.then((m) => {
-      if (m === void 0) {
-        return;
-      }
+    const gl = canvas?.getContext('webgl', { antialias: true });
+
+    if (gl && rust) {
       gl.enable(gl.BLEND);
 
       gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-      const client = new m.Client();
+      const client = new rust.Client();
 
       const initialTime = Date.now();
 
-      function render(time?: number) {
+      const render = (time?: number) => {
         window.requestAnimationFrame(render);
 
         const currentTime = Date.now();
@@ -53,11 +52,11 @@ function main() {
           // Rust render call
           client.render();
         }
-      }
+      };
 
       // Go
       render();
-    });
+    }
   } else {
     console.error('Failed to initialize WebGL');
   }
