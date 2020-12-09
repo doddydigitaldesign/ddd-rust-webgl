@@ -2,8 +2,9 @@ use wasm_bindgen::prelude::*;
 use web_sys::console;
 
 pub mod app;
-pub use app::App;
-
+pub use app::*;
+pub mod gl_setup;
+pub use gl_setup::*;
 // When the `wee_alloc` feature is enabled, this uses `wee_alloc` as the global
 // allocator.
 //

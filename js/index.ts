@@ -15,11 +15,7 @@ async function main() {
     const gl = canvas?.getContext('webgl', { antialias: true });
 
     if (gl && rust) {
-      gl.enable(gl.BLEND);
-
-      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-
-      const client = new rust.Client();
+      const client = new rust.App();
 
       const initialTime = Date.now();
 
