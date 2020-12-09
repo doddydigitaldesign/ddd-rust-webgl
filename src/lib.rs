@@ -1,10 +1,19 @@
 use wasm_bindgen::prelude::*;
 use web_sys::console;
 
-pub mod app;
+mod app;
 pub use app::*;
-pub mod gl_setup;
+mod gl_setup;
 pub use gl_setup::*;
+mod core;
+pub use crate::core::{programs, shaders};
+mod state;
+use state::{get_state, update_state};
+mod util;
+
+#[macro_use]
+extern crate lazy_static;
+
 // When the `wee_alloc` feature is enabled, this uses `wee_alloc` as the global
 // allocator.
 //

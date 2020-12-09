@@ -15,14 +15,15 @@ async function main() {
     const gl = canvas?.getContext('webgl', { antialias: true });
 
     if (gl && rust) {
-      const client = new rust.App();
+      const app = new rust.App();
 
       const initialTime = Date.now();
 
-      const render = (time?: number) => {
+      const render = (timeStamp: number) => {
         window.requestAnimationFrame(render);
 
         const currentTime = Date.now();
+        // console.log('currentTime:', currentTime);
 
         if (currentTime >= lastDrawTime + CONSTANTS.FPS_THROTTLE) {
           lastDrawTime = currentTime;
@@ -43,15 +44,15 @@ async function main() {
           let elapsedTime = currentTime - initialTime;
 
           // Rust update call
-          client.update(elapsedTime, window.innerHeight, window.innerWidth);
+          app.update(elapsedTime, window.innerHeight, window.innerWidth);
 
           // Rust render call
-          client.render();
+          app.render();
         }
       };
 
       // Go
-      render();
+      render(Date.now());
     }
   } else {
     console.error('Failed to initialize WebGL');
