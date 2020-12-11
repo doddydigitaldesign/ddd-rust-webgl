@@ -32,11 +32,11 @@ async function main() {
             window.innerHeight !== canvas.height ||
             window.innerWidth !== canvas.width
           ) {
-            canvas.height = window.innerHeight;
-            canvas.style.height = '' + window.innerHeight;
+            // canvas.height = window.innerHeight;
+            // canvas.style.height = '' + window.innerHeight + 'px';
 
-            canvas.width = window.innerWidth;
-            canvas.style.width = '' + window.innerWidth;
+            // canvas.width = window.innerWidth;
+            // canvas.style.width = '' + window.innerWidth + 'px';
 
             gl?.viewport(0, 0, window.innerWidth, window.innerHeight);
           }

@@ -8,7 +8,7 @@ pub use gl_setup::*;
 mod core;
 pub use crate::core::{programs, shaders};
 mod state;
-use state::{get_state, update_state};
+// use state::*;
 mod util;
 
 #[macro_use]
@@ -36,6 +36,7 @@ pub fn main_js() -> Result<(), JsValue> {
 }
 
 #[wasm_bindgen]
+#[allow(unused_unsafe)]
 pub fn log(msg: &str) {
     unsafe {
         console::log_1(&JsValue::from_str(msg));

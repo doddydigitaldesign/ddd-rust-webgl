@@ -8,7 +8,7 @@ use wasm_bindgen::JsCast;
 use web_sys::WebGlRenderingContext as GL;
 use web_sys::*;
 
-pub struct Color2D {
+pub struct Color2DGradient {
     program: WebGlProgram,
     rect_vertices_array_length: usize,
     rect_vertices_buffer: WebGlBuffer,
@@ -17,12 +17,12 @@ pub struct Color2D {
     u_transform: WebGlUniformLocation,
 }
 
-impl Color2D {
+impl Color2DGradient {
     pub fn new(gl: &WebGlRenderingContext) -> Self {
         let program = util::link_program(
             &gl,
-            shaders::vertex::color_2d::SHADER,
-            shaders::fragment::color_2d::SHADER,
+            shaders::vertex::color_2d_gradient::SHADER,
+            shaders::fragment::color_2d_gradient::SHADER,
         )
         .unwrap();
 
@@ -87,23 +87,21 @@ impl Color2D {
 
         // RGBA
         let total = left + right + top + bottom;
-        let red = left / total;
-        let blue = top / total;
-        let green = bottom / total;
-        let alpha = 1f32;
+        let red = top / total;
+        let blue = left / total;
+        let green = right / total;
+        let alpha = 0.8f32;
         gl.uniform4f(Some(&self.u_color), red, blue, green, alpha);
 
         gl.uniform1f(Some(&self.u_opacity), alpha);
 
         let translate_x = 2.0 * left / canvas_width - 1.0;
         let translate_y = 2.0 * bottom / canvas_height - 1.0;
-        let scale_x = 2.0 * (right - left) / (canvas_width);
-        let scale_y = 2.0 * (top - bottom) / (canvas_height);
+        let scale_x = 2.0 * (right - left) / canvas_width;
+        let scale_y = 2.0 * (top - bottom) / canvas_height;
 
-        //colod_2d: trans_x: -0.3909375, trans_y: -0.9, scale_x: 0.781875, scale_y: 1.8000001
-        //color_2d_gradient: trans_x: -0.3675, trans_y: -0.84604317, scale_x: 0.735, scale_y: 1.692086
         // let msg = format!(
-        //     "color_2d: tx {}, ty {}, sx: {}, sy {}",
+        //     "color_2d_g: tx {}, ty {}, sx: {}, sy {}",
         //     translate_x, translate_y, scale_x, scale_y
         // );
 
@@ -116,7 +114,7 @@ impl Color2D {
         let transform_scale_translate =
             util::multiply_matrix_4(transform_scale, transform_translate);
 
-        let msg = format!("color_2d: {:?}", transform_scale_translate);
+        let msg = format!("color_2d_g: {:?}", transform_scale_translate);
 
         log(&msg);
 

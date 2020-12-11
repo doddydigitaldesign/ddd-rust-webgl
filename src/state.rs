@@ -1,5 +1,7 @@
 use std::sync::{Arc, Mutex};
 
+// use crate::log;
+
 lazy_static! {
     static ref STATE: Mutex<Arc<State>> = Mutex::new(Arc::new(State::new()));
 }
@@ -17,24 +19,35 @@ pub fn update_state(time: f32, canvas_height: f32, canvas_width: f32) {
 
     let mut data = STATE.lock().unwrap();
 
+    let anchor_bottom = half_canvas_height - half_display_size;
+    let anchor_top = half_canvas_height + half_display_size;
+    let anchor_left = half_canvas_width - half_display_size;
+    let anchor_right = half_canvas_width + half_display_size;
+
     *data = Arc::new(State {
         canvas_height,
         canvas_width,
-
-        anchor_bottom: half_canvas_height - half_display_size,
-        anchor_top: half_canvas_height + half_display_size,
-        anchor_left: half_canvas_width - half_display_size,
-        anchor_right: half_canvas_width + half_display_size,
-
+        anchor_bottom,
+        anchor_top,
+        anchor_left,
+        anchor_right,
         time,
         ..*data.clone()
     });
+
+    // let msg = format!(
+    //     "state anchors: bottom: {}, top: {}, left: {}, right: {}",
+    //     anchor_bottom, anchor_top, anchor_left, anchor_right
+    // );
+
+    // log(&msg);
 }
 
 pub fn get_state() -> Arc<State> {
     STATE.lock().unwrap().clone()
 }
 
+#[derive(Debug)]
 pub struct State {
     pub canvas_height: f32,
     pub canvas_width: f32,

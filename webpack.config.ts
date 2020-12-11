@@ -29,7 +29,7 @@ const packer = (
     devServer: {
       port: 3000,
       contentBase: dist,
-      hot: true,
+      // hot: true,
     },
     plugins: [
       new HtmlWebPackPlugin({ template: 'static/index.html' }),
