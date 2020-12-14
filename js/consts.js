@@ -3,4 +3,4 @@ export const elementIds = {
 };
 export const CONSTANTS = {
   FPS_THROTTLE: 1000 / 30, // ms/frame
-} as const;
+};

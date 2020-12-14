@@ -4,7 +4,7 @@ authors = ["Daniel Sonne Lehnberg <doddy@doddy.se>"]
 categories = ["wasm"]
 description = "Rust, WASM and WebGL."
 edition = "2018"
-name = "rust-webpack-template"
+name = "ddd-rust-webgl"
 readme = "README.md"
 version = "0.1.0"
 
