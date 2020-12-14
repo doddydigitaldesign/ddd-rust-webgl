@@ -18,10 +18,10 @@ pub fn update_dynamic_data(time: f32, canvas_height: f32, canvas_width: f32) {
         canvas_height: canvas_height,
         canvas_width: canvas_width,
 
-        control_bottom: half_canvas_height - half_display_size,
-        control_top: half_canvas_height + half_display_size,
-        control_left: half_canvas_width - half_display_size,
-        control_right: half_canvas_width + half_display_size,
+        anchor_bottom: half_canvas_height - half_display_size,
+        anchor_top: half_canvas_height + half_display_size,
+        anchor_left: half_canvas_width - half_display_size,
+        anchor_right: half_canvas_width + half_display_size,
 
         time: time,
         ..*data.clone()
@@ -35,32 +35,32 @@ pub fn get_curr_state() -> Arc<AppState> {
 pub struct AppState {
     pub canvas_height: f32,
     pub canvas_width: f32,
-    pub control_bottom: f32,
-    pub control_top: f32,
-    pub control_left: f32,
-    pub control_right: f32,
+    pub anchor_bottom: f32,
+    pub anchor_top: f32,
+    pub anchor_left: f32,
+    pub anchor_right: f32,
     pub mouse_down: bool,
     pub mouse_x: f32,
     pub mouse_y: f32,
-    pub rotation_x_axis: f32,
-    pub rotation_y_axis: f32,
+    pub rotation_x: f32,
+    pub rotation_y: f32,
     pub time: f32,
 }
 
 impl AppState {
     fn new() -> Self {
         Self {
-            canvas_height: 0., 
+            canvas_height: 0.,
             canvas_width: 0.,
-            control_bottom: 0.,
-            control_top: 0.,
-            control_left: 0.,
-            control_right: 0.,
+            anchor_bottom: 0.,
+            anchor_top: 0.,
+            anchor_left: 0.,
+            anchor_right: 0.,
             mouse_down: false,
             mouse_x: -1.,
             mouse_y: -1.,
-            rotation_x_axis: -0.5,
-            rotation_y_axis: -0.5,
+            rotation_x: -0.5,
+            rotation_y: -0.5,
             time: 0.,
         }
     }
@@ -95,8 +95,8 @@ pub fn update_mouse_position(x: f32, y: f32) {
     *data = Arc::new(AppState {
         mouse_x: x,
         mouse_y: inverted_y,
-        rotation_x_axis: data.rotation_x_axis + rotation_x_delta,
-        rotation_y_axis: data.rotation_y_axis - rotation_y_delta,
+        rotation_x: data.rotation_x + rotation_x_delta,
+        rotation_y: data.rotation_y - rotation_y_delta,
         ..*data.clone()
     });
 }

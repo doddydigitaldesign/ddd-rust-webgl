@@ -1,4 +1,4 @@
-use super::super::util as cf;
+use super::super::util;
 use js_sys::WebAssembly;
 use wasm_bindgen::JsCast;
 use web_sys::WebGlRenderingContext as GL;
@@ -18,7 +18,7 @@ pub struct Graph3D {
 
 impl Graph3D {
     pub fn new(gl: &WebGlRenderingContext) -> Self {
-        let program = cf::link_program(
+        let program = util::link_program(
             &gl,
             &super::super::shaders::vertex::graph_3d::SHADER,
             &super::super::shaders::fragment::graph_3d::SHADER,
@@ -26,7 +26,7 @@ impl Graph3D {
         .unwrap();
 
         let positions_and_indices =
-            cf::get_position_grid_n_by_n(super::super::constants::GRID_SIZE);
+            util::get_position_grid_n_by_n(super::super::constants::GRID_SIZE);
         let memory_buffer = wasm_bindgen::memory()
             .dyn_into::<WebAssembly::Memory>()
             .unwrap()
@@ -91,7 +91,7 @@ impl Graph3D {
     ) {
         gl.use_program(Some(&self.program));
 
-        let my_3d_matrices = cf::get_3d_matrices(
+        let my_3d_matrices = util::get_3d_matrices(
             bottom,
             top,
             left,
@@ -135,7 +135,7 @@ impl Graph3D {
         gl.vertex_attrib_pointer_with_i32(2, 3, GL::FLOAT, false, 0, 0);
         gl.enable_vertex_attrib_array(2);
 
-        let normals_vals = cf::get_grid_normals(super::super::constants::GRID_SIZE, &y_vals);
+        let normals_vals = util::get_grid_normals(super::super::constants::GRID_SIZE, &y_vals);
         let normals_vals_memory_buffer = wasm_bindgen::memory()
             .dyn_into::<WebAssembly::Memory>()
             .unwrap()

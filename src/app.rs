@@ -35,14 +35,14 @@ impl App {
 
         self.program_graph_3d.render(
             &self.gl,
-            app_state.control_bottom,
-            app_state.control_top,
-            app_state.control_left,
-            app_state.control_right,
+            app_state.anchor_bottom,
+            app_state.anchor_top,
+            app_state.anchor_left,
+            app_state.anchor_right,
             app_state.canvas_height,
             app_state.canvas_width,
-            app_state.rotation_x_axis,
-            app_state.rotation_y_axis,
+            app_state.rotation_x,
+            app_state.rotation_y,
             &util::get_updated_3d_y_values(app_state.time),
         );
     }

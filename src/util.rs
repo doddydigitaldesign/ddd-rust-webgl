@@ -70,7 +70,7 @@ pub fn get_normal_vec(
     let v_z = point_c_z - point_a_z;
 
     let normal_x = u_y * v_z - v_y * u_z;
-    let normal_y = -1. * (u_x * v_z - v_x * u_z);
+    let normal_y = -1.0 * (u_x * v_z - v_x * u_z);
     let normal_z = u_x * v_y - v_x * u_y;
 
     let normal_size = (normal_x * normal_x + normal_y * normal_y + normal_z * normal_z).sqrt();
@@ -169,12 +169,12 @@ pub fn get_3d_matrices(
     let scale = (scale_x + scale_y) / 2.0;
 
     let translation_matrix: [f32; 16] = translation_matrix(
-        -1. + scale_x + 2. * left / canvas_width,
-        -1. + scale_y + 2. * bottom / canvas_height,
+        -1.0 + scale_x + 2.0 * left / canvas_width,
+        -1.0 + scale_y + 2.0 * bottom / canvas_height,
         Z_PLANE,
     );
 
-    let scale_matrix: [f32; 16] = scaling_matrix(scale, scale, 0.);
+    let scale_matrix: [f32; 16] = scaling_matrix(scale, scale, 0.0);
     let rotation_scale = mult_matrix_4(rotation_matrix, scale_matrix);
     let combined_transform = mult_matrix_4(rotation_scale, translation_matrix);
     let perspective_matrix_tmp: Perspective3<f32> =
@@ -224,9 +224,9 @@ pub fn get_position_grid_n_by_n(n: usize) -> (Vec<f32>, Vec<u16>) {
     for z in 0..n_plus_one {
         for x in 0..n_plus_one {
             let start_pos_i = 3 * (z * n_plus_one + x);
-            positions[start_pos_i + 0] = -1. + (x as f32) * square_size;
+            positions[start_pos_i + 0] = -1.0 + (x as f32) * square_size;
             positions[start_pos_i + 1] = 0.;
-            positions[start_pos_i + 2] = -1. + (z as f32) * square_size;
+            positions[start_pos_i + 2] = -1.0 + (z as f32) * square_size;
 
             if z < n && x < n {
                 let start_index_i = 6 * (z * n + x);
