@@ -93,8 +93,10 @@ pub fn get_updated_3d_y_values(curr_time: f32) -> Vec<f32> {
             let use_y_index = z * row_size + x;
             let scaled_x = FREQUENCY_SCALE * (x as f32 - half_grid) / half_grid;
             let scaled_z = FREQUENCY_SCALE * (z as f32 - half_grid) / half_grid;
-            y_values[use_y_index] =
-                Y_SCALE * ((scaled_x.powi(2) + scaled_z.powi(2)).sqrt() + sin_offset).sin();
+            y_values[use_y_index] = Y_SCALE * (scaled_x + scaled_z - sin_offset).sin();
+
+            // y_values[use_y_index] =
+            //     Y_SCALE * ((scaled_x.powi(2) + scaled_z.powi(2)).sqrt() - sin_offset).sin()
         }
     }
 

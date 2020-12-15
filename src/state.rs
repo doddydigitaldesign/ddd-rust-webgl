@@ -28,7 +28,7 @@ pub fn update_dynamic_data(time: f32, canvas_height: f32, canvas_width: f32) {
     });
 }
 
-pub fn get_curr_state() -> Arc<AppState> {
+pub fn get_state() -> Arc<AppState> {
     APP_STATE.lock().unwrap().clone()
 }
 
@@ -45,23 +45,25 @@ pub struct AppState {
     pub rotation_x: f32,
     pub rotation_y: f32,
     pub time: f32,
+    pub dt: f32,
 }
 
 impl AppState {
     fn new() -> Self {
         Self {
-            canvas_height: 0.,
-            canvas_width: 0.,
-            anchor_bottom: 0.,
-            anchor_top: 0.,
-            anchor_left: 0.,
-            anchor_right: 0.,
+            canvas_height: 0.0,
+            canvas_width: 0.0,
+            anchor_bottom: 0.0,
+            anchor_top: 0.0,
+            anchor_left: 0.0,
+            anchor_right: 0.0,
             mouse_down: false,
-            mouse_x: -1.,
-            mouse_y: -1.,
+            mouse_x: -1.0,
+            mouse_y: -1.0,
             rotation_x: -0.5,
             rotation_y: -0.5,
-            time: 0.,
+            time: 0.0,
+            dt: 0.0,
         }
     }
 }

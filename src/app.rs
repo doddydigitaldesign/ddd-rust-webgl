@@ -31,7 +31,9 @@ impl App {
     pub fn render(&self) {
         self.gl.clear(GL::COLOR_BUFFER_BIT | GL::DEPTH_BUFFER_BIT);
 
-        let app_state = state::get_curr_state();
+        let app_state = state::get_state();
+
+        let y_values = util::get_updated_3d_y_values(app_state.time);
 
         self.program_graph_3d.render(
             &self.gl,
@@ -43,7 +45,7 @@ impl App {
             app_state.canvas_width,
             app_state.rotation_x,
             app_state.rotation_y,
-            &util::get_updated_3d_y_values(app_state.time),
+            &y_values,
         );
     }
 }
