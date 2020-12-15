@@ -17,7 +17,7 @@ pub const SHADER: &str = r#"
         vec4 transformedNormal = uNormalsRotation * vec4(aVertexNormal, 1.0);
         float directional = max(dot(transformedNormal.xyz, directionalVector), 0.0);
         vec3 vLighting = ambientLight + (directionalLightColor * directional);
-        vec3 baseColor = vec3(0.2, 0.6, 0.8);
+        vec3 baseColor = vec3(0.7, 0.2, 0.0);
 
         vColor = vec4(baseColor * vLighting, 1.0);
     }

@@ -5,75 +5,75 @@ use nalgebra::{Matrix4, Perspective3};
 use web_sys::WebGlRenderingContext as GL;
 use web_sys::*;
 
-pub fn get_grid_normals(n: usize, y_vals: &Vec<f32>) -> Vec<f32> {
+pub fn get_grid_normals(n: usize, y_values: &Vec<f32>) -> Vec<f32> {
     let points_per_row = n + 1;
     let graph_layout_width: f32 = 2.;
     let square_size: f32 = graph_layout_width / n as f32;
-    let mut return_var: Vec<f32> = vec![0.; 3 * points_per_row * points_per_row];
+    let mut tmp: Vec<f32> = vec![0.0; 3 * points_per_row.pow(2)];
 
     for z in 0..points_per_row {
         for x in 0..points_per_row {
-            let y_val_index_a = z * points_per_row + x;
-            let return_var_start_index = 3 * y_val_index_a;
+            let y_a = z * points_per_row + x;
+            let start_index = 3 * y_a;
 
             if z == n || x == n {
-                return_var[return_var_start_index + 1] = 1.; //default
+                tmp[start_index + 1] = 1.0;
             } else {
-                let y_val_index_b = y_val_index_a + points_per_row;
-                let y_val_index_c = y_val_index_a + 1;
+                let y_b = y_a + points_per_row;
+                let y_c = y_a + 1;
 
-                let x_val_1 = square_size * x as f32;
-                let x_val_2 = x_val_1 + square_size;
+                let x_1 = square_size * x as f32;
+                let x_2 = x_1 + square_size;
 
-                let z_val_1 = square_size * z as f32;
-                let z_val_2 = z_val_1 + square_size;
+                let z_1 = square_size * z as f32;
+                let z_2 = z_1 + square_size;
 
                 let normals = get_normal_vec(
-                    x_val_1,
-                    y_vals[y_val_index_a],
-                    z_val_1,
-                    x_val_1,
-                    y_vals[y_val_index_b],
-                    z_val_2,
-                    x_val_2,
-                    y_vals[y_val_index_c],
-                    z_val_2,
+                    x_1,
+                    y_values[y_a],
+                    z_1,
+                    x_1,
+                    y_values[y_b],
+                    z_2,
+                    x_2,
+                    y_values[y_c],
+                    z_2,
                 );
 
-                return_var[return_var_start_index + 0] = normals.0;
-                return_var[return_var_start_index + 1] = normals.1;
-                return_var[return_var_start_index + 2] = normals.2;
+                tmp[start_index + 0] = normals.0;
+                tmp[start_index + 1] = normals.1;
+                tmp[start_index + 2] = normals.2;
             }
         }
     }
 
-    return_var
+    tmp
 }
 
 pub fn get_normal_vec(
-    point_a_x: f32,
-    point_a_y: f32,
-    point_a_z: f32,
-    point_b_x: f32,
-    point_b_y: f32,
-    point_b_z: f32,
-    point_c_x: f32,
-    point_c_y: f32,
-    point_c_z: f32,
+    a_x: f32,
+    a_y: f32,
+    a_z: f32,
+    b_x: f32,
+    b_y: f32,
+    b_z: f32,
+    c_x: f32,
+    c_y: f32,
+    c_z: f32,
 ) -> (f32, f32, f32) {
-    let u_x = point_b_x - point_a_x;
-    let u_y = point_b_y - point_a_y;
-    let u_z = point_b_z - point_a_z;
+    let u_x = b_x - a_x;
+    let u_y = b_y - a_y;
+    let u_z = b_z - a_z;
 
-    let v_x = point_c_x - point_a_x;
-    let v_y = point_c_y - point_a_y;
-    let v_z = point_c_z - point_a_z;
+    let v_x = c_x - a_x;
+    let v_y = c_y - a_y;
+    let v_z = c_z - a_z;
 
     let normal_x = u_y * v_z - v_y * u_z;
     let normal_y = -1.0 * (u_x * v_z - v_x * u_z);
     let normal_z = u_x * v_y - v_x * u_y;
 
-    let normal_size = (normal_x * normal_x + normal_y * normal_y + normal_z * normal_z).sqrt();
+    let normal_size = (normal_x.powi(2) + normal_y.powi(2) + normal_z.powi(2)).sqrt();
 
     (
         normal_x / normal_size,
@@ -83,24 +83,22 @@ pub fn get_normal_vec(
 }
 
 pub fn get_updated_3d_y_values(curr_time: f32) -> Vec<f32> {
-    let point_count_per_row = GRID_SIZE + 1;
-    let mut y_vals: Vec<f32> = vec![0.0; point_count_per_row * point_count_per_row];
-    let half_grid: f32 = point_count_per_row as f32 / 2.0;
-    let frequency_scale: f32 = 5.0 * std::f32::consts::PI;
-    let y_scale = 0.05;
+    let row_size = GRID_SIZE + 1;
+    let mut y_values: Vec<f32> = vec![0.0; row_size.pow(2)];
+    let half_grid: f32 = row_size as f32 / 2.0;
     let sin_offset = curr_time / 1000.0; //speed
 
-    for z in 0..point_count_per_row {
-        for x in 0..point_count_per_row {
-            let use_y_index = z * point_count_per_row + x;
-            let scaled_x = frequency_scale * (x as f32 - half_grid) / half_grid;
-            let scaled_z = frequency_scale * (z as f32 - half_grid) / half_grid;
-            y_vals[use_y_index] =
-                y_scale * ((scaled_x.powi(2) + scaled_z.powi(2)).sqrt() + sin_offset).sin();
+    for z in 0..row_size {
+        for x in 0..row_size {
+            let use_y_index = z * row_size + x;
+            let scaled_x = FREQUENCY_SCALE * (x as f32 - half_grid) / half_grid;
+            let scaled_z = FREQUENCY_SCALE * (z as f32 - half_grid) / half_grid;
+            y_values[use_y_index] =
+                Y_SCALE * ((scaled_x.powi(2) + scaled_z.powi(2)).sqrt() + sin_offset).sin();
         }
     }
 
-    y_vals
+    y_values
 }
 
 pub struct Matrices3D {
@@ -119,8 +117,8 @@ pub fn get_3d_matrices(
     rotation_angle_y_axis: f32,
 ) -> Matrices3D {
     let mut return_var = Matrices3D {
-        normals_rotation: [0.; 16],
-        projection: [0.; 16],
+        normals_rotation: [0.0; 16],
+        projection: [0.0; 16],
     };
 
     let rotate_x_axis: [f32; 16] = [
@@ -179,7 +177,7 @@ pub fn get_3d_matrices(
     let combined_transform = mult_matrix_4(rotation_scale, translation_matrix);
     let perspective_matrix_tmp: Perspective3<f32> =
         Perspective3::new(aspect, FIELD_OF_VIEW, Z_NEAR, Z_FAR);
-    let mut perspective: [f32; 16] = [0.; 16];
+    let mut perspective: [f32; 16] = [0.0; 16];
     perspective.copy_from_slice(perspective_matrix_tmp.as_matrix().as_slice());
 
     return_var.projection = mult_matrix_4(combined_transform, perspective);
@@ -215,17 +213,17 @@ pub fn get_3d_matrices(
 
 pub fn get_position_grid_n_by_n(n: usize) -> (Vec<f32>, Vec<u16>) {
     let n_plus_one = n + 1;
-    let mut positions: Vec<f32> = vec![0.; 3 * n_plus_one * n_plus_one];
+    let mut positions: Vec<f32> = vec![0.0; 3 * n_plus_one * n_plus_one];
     let mut indices: Vec<u16> = vec![0; 6 * n * n];
 
-    let graph_layout_width: f32 = 2.;
+    let graph_layout_width: f32 = 2.0;
     let square_size: f32 = graph_layout_width / n as f32;
 
     for z in 0..n_plus_one {
         for x in 0..n_plus_one {
             let start_pos_i = 3 * (z * n_plus_one + x);
             positions[start_pos_i + 0] = -1.0 + (x as f32) * square_size;
-            positions[start_pos_i + 1] = 0.;
+            positions[start_pos_i + 1] = 0.0;
             positions[start_pos_i + 2] = -1.0 + (z as f32) * square_size;
 
             if z < n && x < n {
@@ -302,54 +300,54 @@ fn compile_shader(
     }
 }
 
-pub fn translation_matrix(tx: f32, ty: f32, tz: f32) -> [f32; 16] {
-    let mut return_var = [0.; 16];
+pub fn translation_matrix(x: f32, y: f32, z: f32) -> [f32; 16] {
+    let mut tmp = [0.0; 16];
 
-    return_var[0] = 1.;
-    return_var[5] = 1.;
-    return_var[10] = 1.;
-    return_var[15] = 1.;
+    tmp[0] = 1.0;
+    tmp[5] = 1.0;
+    tmp[10] = 1.0;
+    tmp[15] = 1.0;
 
-    return_var[12] = tx;
-    return_var[13] = ty;
-    return_var[14] = tz;
+    tmp[12] = x;
+    tmp[13] = y;
+    tmp[14] = z;
 
-    return_var
+    tmp
 }
 
-pub fn scaling_matrix(sx: f32, sy: f32, sz: f32) -> [f32; 16] {
-    let mut return_var = [0.; 16];
+pub fn scaling_matrix(x: f32, y: f32, z: f32) -> [f32; 16] {
+    let mut tmp = [0.0; 16];
 
-    return_var[0] = sx;
-    return_var[5] = sy;
-    return_var[10] = sz;
-    return_var[15] = 1.;
+    tmp[0] = x;
+    tmp[5] = y;
+    tmp[10] = z;
+    tmp[15] = 1.0;
 
-    return_var
+    tmp
 }
 
 pub fn mult_matrix_4(a: [f32; 16], b: [f32; 16]) -> [f32; 16] {
-    let mut return_var = [0.; 16];
+    let mut tmp = [0.0; 16];
 
-    return_var[0] = a[0] * b[0] + a[1] * b[4] + a[2] * b[8] + a[3] * b[12];
-    return_var[1] = a[0] * b[1] + a[1] * b[5] + a[2] * b[9] + a[3] * b[13];
-    return_var[2] = a[0] * b[2] + a[1] * b[6] + a[2] * b[10] + a[3] * b[14];
-    return_var[3] = a[0] * b[3] + a[1] * b[7] + a[2] * b[11] + a[3] * b[15];
+    tmp[0] = a[0] * b[0] + a[1] * b[4] + a[2] * b[8] + a[3] * b[12];
+    tmp[1] = a[0] * b[1] + a[1] * b[5] + a[2] * b[9] + a[3] * b[13];
+    tmp[2] = a[0] * b[2] + a[1] * b[6] + a[2] * b[10] + a[3] * b[14];
+    tmp[3] = a[0] * b[3] + a[1] * b[7] + a[2] * b[11] + a[3] * b[15];
 
-    return_var[4] = a[4] * b[0] + a[5] * b[4] + a[6] * b[8] + a[7] * b[12];
-    return_var[5] = a[4] * b[1] + a[5] * b[5] + a[6] * b[9] + a[7] * b[13];
-    return_var[6] = a[4] * b[2] + a[5] * b[6] + a[6] * b[10] + a[7] * b[14];
-    return_var[7] = a[4] * b[3] + a[5] * b[7] + a[6] * b[11] + a[7] * b[15];
+    tmp[4] = a[4] * b[0] + a[5] * b[4] + a[6] * b[8] + a[7] * b[12];
+    tmp[5] = a[4] * b[1] + a[5] * b[5] + a[6] * b[9] + a[7] * b[13];
+    tmp[6] = a[4] * b[2] + a[5] * b[6] + a[6] * b[10] + a[7] * b[14];
+    tmp[7] = a[4] * b[3] + a[5] * b[7] + a[6] * b[11] + a[7] * b[15];
 
-    return_var[8] = a[8] * b[0] + a[9] * b[4] + a[10] * b[8] + a[11] * b[12];
-    return_var[9] = a[8] * b[1] + a[9] * b[5] + a[10] * b[9] + a[11] * b[13];
-    return_var[10] = a[8] * b[2] + a[9] * b[6] + a[10] * b[10] + a[11] * b[14];
-    return_var[11] = a[8] * b[3] + a[9] * b[7] + a[10] * b[11] + a[11] * b[15];
+    tmp[8] = a[8] * b[0] + a[9] * b[4] + a[10] * b[8] + a[11] * b[12];
+    tmp[9] = a[8] * b[1] + a[9] * b[5] + a[10] * b[9] + a[11] * b[13];
+    tmp[10] = a[8] * b[2] + a[9] * b[6] + a[10] * b[10] + a[11] * b[14];
+    tmp[11] = a[8] * b[3] + a[9] * b[7] + a[10] * b[11] + a[11] * b[15];
 
-    return_var[12] = a[12] * b[0] + a[13] * b[4] + a[14] * b[8] + a[15] * b[12];
-    return_var[13] = a[12] * b[1] + a[13] * b[5] + a[14] * b[9] + a[15] * b[13];
-    return_var[14] = a[12] * b[2] + a[13] * b[6] + a[14] * b[10] + a[15] * b[14];
-    return_var[15] = a[12] * b[3] + a[13] * b[7] + a[14] * b[11] + a[15] * b[15];
+    tmp[12] = a[12] * b[0] + a[13] * b[4] + a[14] * b[8] + a[15] * b[12];
+    tmp[13] = a[12] * b[1] + a[13] * b[5] + a[14] * b[9] + a[15] * b[13];
+    tmp[14] = a[12] * b[2] + a[13] * b[6] + a[14] * b[10] + a[15] * b[14];
+    tmp[15] = a[12] * b[3] + a[13] * b[7] + a[14] * b[11] + a[15] * b[15];
 
-    return_var
+    tmp
 }
