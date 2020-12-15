@@ -23,8 +23,8 @@ impl App {
         }
     }
 
-    pub fn update(&mut self, time: f32, height: f32, width: f32) -> Result<(), JsValue> {
-        state::update_dynamic_data(time, height, width);
+    pub fn update(&mut self, time: f32, dt: f32, height: f32, width: f32) -> Result<(), JsValue> {
+        state::update_dynamic_data(time, dt, height, width);
         Ok(())
     }
 

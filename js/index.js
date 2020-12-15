@@ -14,7 +14,7 @@ rust.then((m) => {
 
   function render(elapsed) {
     const currTime = elapsed;
-    const dt = currTime - lastDrawTime + FPS_THROTTLE;
+    const dt = currTime - lastDrawTime;
 
     if (dt >= FPS_THROTTLE) {
       lastDrawTime = currTime;
@@ -34,7 +34,7 @@ rust.then((m) => {
         gl.viewport(0, 0, window.innerWidth, window.innerHeight);
       }
 
-      app.update(elapsed, window.innerHeight, window.innerWidth);
+      app.update(elapsed, dt, window.innerHeight, window.innerWidth);
       app.render();
       window.requestAnimationFrame(render);
     }

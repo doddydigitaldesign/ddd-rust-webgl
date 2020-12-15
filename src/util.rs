@@ -1,3 +1,5 @@
+use crate::log;
+
 use super::constants::*;
 
 extern crate nalgebra;
@@ -86,14 +88,15 @@ pub fn get_updated_3d_y_values(curr_time: f32) -> Vec<f32> {
     let row_size = GRID_SIZE + 1;
     let mut y_values: Vec<f32> = vec![0.0; row_size.pow(2)];
     let half_grid: f32 = row_size as f32 / 2.0;
-    let sin_offset = curr_time / 1000.0; //speed
+    let sin_offset: f32 = curr_time / 1000.0; //speed
 
     for z in 0..row_size {
         for x in 0..row_size {
-            let use_y_index = z * row_size + x;
-            let scaled_x = FREQUENCY_SCALE * (x as f32 - half_grid) / half_grid;
+            let y_index = z * row_size + x;
             let scaled_z = FREQUENCY_SCALE * (z as f32 - half_grid) / half_grid;
-            y_values[use_y_index] = Y_SCALE * (scaled_x + scaled_z - sin_offset).sin();
+            let scaled_x = FREQUENCY_SCALE * (x as f32 - half_grid) / half_grid;
+
+            y_values[y_index] = Y_SCALE * (scaled_x + scaled_z - sin_offset).sin();
 
             // y_values[use_y_index] =
             //     Y_SCALE * ((scaled_x.powi(2) + scaled_z.powi(2)).sqrt() - sin_offset).sin()

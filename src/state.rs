@@ -5,7 +5,7 @@ lazy_static! {
     static ref APP_STATE: Mutex<Arc<AppState>> = Mutex::new(Arc::new(AppState::new()));
 }
 
-pub fn update_dynamic_data(time: f32, canvas_height: f32, canvas_width: f32) {
+pub fn update_dynamic_data(time: f32, dt: f32, canvas_height: f32, canvas_width: f32) {
     let min_height_width = canvas_height.min(canvas_width);
     let display_size = 0.9 * min_height_width;
     let half_display_size = display_size / 2.;
@@ -23,6 +23,7 @@ pub fn update_dynamic_data(time: f32, canvas_height: f32, canvas_width: f32) {
         anchor_left: half_canvas_width - half_display_size,
         anchor_right: half_canvas_width + half_display_size,
 
+        dt: dt,
         time: time,
         ..*data.clone()
     });
