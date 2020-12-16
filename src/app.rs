@@ -33,7 +33,7 @@ impl App {
 
         let app_state = state::get_state();
 
-        let y_values = util::get_updated_3d_y_values(app_state.time);
+        let y_values = util::get_solved_equation(app_state.time, app_state.dt);
 
         self.program_graph_3d.render(
             &self.gl,

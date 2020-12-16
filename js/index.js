@@ -24,12 +24,12 @@ rust.then((m) => {
         window.innerWidth !== canvas.width
       ) {
         canvas.height = window.innerHeight;
-        canvas.clientHeight = window.innerHeight;
-        canvas.style.height = window.innerHeight;
+        // canvas.clientHeight = window.innerHeight;
+        // canvas.style.height = window.innerHeight;
 
         canvas.width = window.innerWidth;
-        canvas.clientWidth = window.innerWidth;
-        canvas.style.width = window.innerWidth;
+        // canvas.clientWidth = window.innerWidth;
+        // canvas.style.width = window.innerWidth;
 
         gl.viewport(0, 0, window.innerWidth, window.innerHeight);
       }
