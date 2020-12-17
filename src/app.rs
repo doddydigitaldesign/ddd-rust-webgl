@@ -46,6 +46,7 @@ impl App {
             app_state.rotation_x,
             app_state.rotation_y,
             &y_values,
+            app_state.time,
         );
     }
 }

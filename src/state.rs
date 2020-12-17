@@ -2,7 +2,7 @@ use std::sync::Arc;
 use std::sync::Mutex;
 
 lazy_static! {
-    static ref APP_STATE: Mutex<Arc<AppState>> = Mutex::new(Arc::new(AppState::new()));
+    static ref STATE: Mutex<Arc<State>> = Mutex::new(Arc::new(State::new()));
 }
 
 pub fn update_dynamic_data(time: f32, dt: f32, canvas_height: f32, canvas_width: f32) {
@@ -12,9 +12,9 @@ pub fn update_dynamic_data(time: f32, dt: f32, canvas_height: f32, canvas_width:
     let half_canvas_height = canvas_height / 2.;
     let half_canvas_width = canvas_width / 2.;
 
-    let mut data = APP_STATE.lock().unwrap();
+    let mut data = STATE.lock().unwrap();
 
-    *data = Arc::new(AppState {
+    *data = Arc::new(State {
         canvas_height: canvas_height,
         canvas_width: canvas_width,
 
@@ -29,11 +29,11 @@ pub fn update_dynamic_data(time: f32, dt: f32, canvas_height: f32, canvas_width:
     });
 }
 
-pub fn get_state() -> Arc<AppState> {
-    APP_STATE.lock().unwrap().clone()
+pub fn get_state() -> Arc<State> {
+    STATE.lock().unwrap().clone()
 }
 
-pub struct AppState {
+pub struct State {
     pub canvas_height: f32,
     pub canvas_width: f32,
     pub anchor_bottom: f32,
@@ -49,7 +49,7 @@ pub struct AppState {
     pub dt: f32,
 }
 
-impl AppState {
+impl State {
     fn new() -> Self {
         Self {
             canvas_height: 0.0,
@@ -70,8 +70,8 @@ impl AppState {
 }
 
 pub fn update_mouse_down(x: f32, y: f32, is_down: bool) {
-    let mut data = APP_STATE.lock().unwrap();
-    *data = Arc::new(AppState {
+    let mut data = STATE.lock().unwrap();
+    *data = Arc::new(State {
         mouse_down: is_down,
         mouse_x: x,
         mouse_y: data.canvas_height - y,
@@ -80,7 +80,7 @@ pub fn update_mouse_down(x: f32, y: f32, is_down: bool) {
 }
 
 pub fn update_mouse_position(x: f32, y: f32) {
-    let mut data = APP_STATE.lock().unwrap();
+    let mut data = STATE.lock().unwrap();
     let inverted_y = data.canvas_height - y;
     let x_delta = x - data.mouse_x;
     let y_delta = inverted_y - data.mouse_y;
@@ -95,7 +95,7 @@ pub fn update_mouse_position(x: f32, y: f32) {
         0.
     };
 
-    *data = Arc::new(AppState {
+    *data = Arc::new(State {
         mouse_x: x,
         mouse_y: inverted_y,
         rotation_x: data.rotation_x + rotation_x_delta,

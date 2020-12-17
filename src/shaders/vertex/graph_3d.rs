@@ -1,4 +1,8 @@
 pub const SHADER: &str = r#"
+    uniform float time_color_red;
+    uniform float time_color_blue;
+    uniform float time_color_green;
+
     attribute vec4 aPosition;
     attribute float aY;
     attribute vec3 aVertexNormal;
@@ -7,8 +11,13 @@ pub const SHADER: &str = r#"
     uniform mat4 uProjection;
     varying lowp vec4 vColor;
 
+
     void main() {
         gl_Position = uProjection * vec4(aPosition.x, aY, aPosition.z, 1.0);
+
+        time_color_blue;
+        time_color_red;
+        time_color_green;
 
         vec3 ambientLight = vec3(0.0, 0.0, 0.0);
         vec3 directionalLightColor = vec3(1, 1, 1);
@@ -17,7 +26,7 @@ pub const SHADER: &str = r#"
         vec4 transformedNormal = uNormalsRotation * vec4(aVertexNormal, 1.0);
         float directional = max(dot(transformedNormal.xyz, directionalVector), 0.0);
         vec3 vLighting = ambientLight + (directionalLightColor * directional);
-        vec3 baseColor = vec3(0.7, 0.2, 0.0);
+        vec3 baseColor = vec3(time_color_red, time_color_blue, time_color_green);
 
         vColor = vec4(baseColor * vLighting, 1.0);
     }

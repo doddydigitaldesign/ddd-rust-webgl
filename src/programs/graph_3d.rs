@@ -1,3 +1,5 @@
+use crate::constants::GRID_SIZE;
+
 use super::super::util;
 use js_sys::WebAssembly;
 use wasm_bindgen::JsCast;
@@ -14,6 +16,9 @@ pub struct Graph3D {
     pub u_opacity: WebGlUniformLocation,
     pub u_projection: WebGlUniformLocation,
     pub y_buffer: WebGlBuffer,
+    pub time_color_blue: WebGlUniformLocation,
+    pub time_color_red: WebGlUniformLocation,
+    pub time_color_green: WebGlUniformLocation,
 }
 
 impl Graph3D {
@@ -63,6 +68,14 @@ impl Graph3D {
                 .unwrap(),
             u_opacity: gl.get_uniform_location(&program, "uOpacity").unwrap(),
             u_projection: gl.get_uniform_location(&program, "uProjection").unwrap(),
+            time_color_blue: gl
+                .get_uniform_location(&program, "time_color_blue")
+                .unwrap(),
+            time_color_red: gl.get_uniform_location(&program, "time_color_red").unwrap(),
+            time_color_green: gl
+                .get_uniform_location(&program, "time_color_green")
+                .unwrap(),
+
             program: program,
 
             indices_buffer: buffer_indices,
@@ -88,8 +101,24 @@ impl Graph3D {
         rotation_x: f32,
         rotation_y: f32,
         y_values: &Vec<f32>,
+        time: f32,
     ) {
         gl.use_program(Some(&self.program));
+
+        let half_grid = (GRID_SIZE + 1) / 2;
+        let last_index = GRID_SIZE - 1;
+
+        let red_index = (((time / 1000.0) / 2.0).floor() as i32 % (half_grid / 2) as i32) as usize;
+        let green_index = (((time / 1000.0) / 3.0).floor() as i32 % half_grid as i32) as usize;
+        let blue_index = (((time / 1000.0) / 7.0).floor() as i32 % last_index as i32) as usize;
+
+        let time_color_red = y_values[red_index] + 0.5;
+        let time_color_green = y_values[green_index] + 0.5;
+        let time_color_blue = y_values[blue_index] + 0.5;
+
+        gl.uniform1f(Some(&self.time_color_blue), time_color_blue);
+        gl.uniform1f(Some(&self.time_color_red), time_color_red);
+        gl.uniform1f(Some(&self.time_color_green), time_color_green);
 
         let matrices = util::get_3d_matrices(
             bottom,
