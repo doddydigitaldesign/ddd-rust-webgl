@@ -1,12 +1,12 @@
 use wasm_bindgen::prelude::*;
-use web_sys::WebGlRenderingContext as GL;
+use web_sys::WebGl2RenderingContext as GL;
 use web_sys::*;
 
 use crate::{gl_setup, programs, state, util};
 
 #[wasm_bindgen]
 pub struct App {
-    gl: WebGlRenderingContext,
+    gl: GL,
     program_graph_3d: programs::Graph3D,
 }
 

@@ -3,7 +3,7 @@ use crate::constants::GRID_SIZE;
 use super::super::util;
 use js_sys::WebAssembly;
 use wasm_bindgen::JsCast;
-use web_sys::WebGlRenderingContext as GL;
+use web_sys::WebGl2RenderingContext as GL;
 use web_sys::*;
 
 pub struct Graph3D {
@@ -13,7 +13,6 @@ pub struct Graph3D {
     pub normals_buffer: WebGlBuffer,
     pub position_buffer: WebGlBuffer,
     pub u_normals_rotation: WebGlUniformLocation,
-    pub u_opacity: WebGlUniformLocation,
     pub u_projection: WebGlUniformLocation,
     pub y_buffer: WebGlBuffer,
     pub time_color_blue: WebGlUniformLocation,
@@ -22,7 +21,7 @@ pub struct Graph3D {
 }
 
 impl Graph3D {
-    pub fn new(gl: &WebGlRenderingContext) -> Self {
+    pub fn new(gl: &GL) -> Self {
         let program = util::link_program(
             &gl,
             &super::super::shaders::vertex::graph_3d::SHADER,
@@ -30,8 +29,7 @@ impl Graph3D {
         )
         .unwrap();
 
-        let positions_and_indices =
-            util::get_position_grid_n_by_n(super::super::constants::GRID_SIZE);
+        let positions_and_indices = util::get_position_grid_n_by_n(GRID_SIZE);
         let memory_buffer = wasm_bindgen::memory()
             .dyn_into::<WebAssembly::Memory>()
             .unwrap()
@@ -66,7 +64,6 @@ impl Graph3D {
             u_normals_rotation: gl
                 .get_uniform_location(&program, "uNormalsRotation")
                 .unwrap(),
-            u_opacity: gl.get_uniform_location(&program, "uOpacity").unwrap(),
             u_projection: gl.get_uniform_location(&program, "uProjection").unwrap(),
             time_color_blue: gl
                 .get_uniform_location(&program, "time_color_blue")
@@ -91,7 +88,7 @@ impl Graph3D {
 
     pub fn render(
         &self,
-        gl: &WebGlRenderingContext,
+        gl: &GL,
         bottom: f32,
         top: f32,
         left: f32,
@@ -137,7 +134,6 @@ impl Graph3D {
             false,
             &matrices.normals_rotation,
         );
-        gl.uniform1f(Some(&self.u_opacity), 1.0);
 
         gl.bind_buffer(GL::ARRAY_BUFFER, Some(&self.position_buffer));
         gl.vertex_attrib_pointer_with_i32(0, 3, GL::FLOAT, false, 0, 0);

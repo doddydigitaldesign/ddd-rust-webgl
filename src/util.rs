@@ -1,8 +1,10 @@
+use crate::log;
+
 use super::constants::*;
 
 extern crate nalgebra;
 use nalgebra::{Matrix4, Perspective3};
-use web_sys::WebGlRenderingContext as GL;
+use web_sys::WebGl2RenderingContext as GL;
 use web_sys::*;
 
 pub fn get_grid_normals(n: usize, y_values: &Vec<f32>) -> Vec<f32> {
@@ -248,11 +250,7 @@ pub fn get_position_grid_n_by_n(n: usize) -> (Vec<f32>, Vec<u16>) {
     (positions, indices)
 }
 
-pub fn link_program(
-    gl: &WebGlRenderingContext,
-    vert_source: &str,
-    frag_source: &str,
-) -> Result<WebGlProgram, String> {
+pub fn link_program(gl: &GL, vert_source: &str, frag_source: &str) -> Result<WebGlProgram, String> {
     let program = gl
         .create_program()
         .ok_or_else(|| String::from("Error creating program"))?;
@@ -266,7 +264,7 @@ pub fn link_program(
     gl.link_program(&program);
 
     if gl
-        .get_program_parameter(&program, WebGlRenderingContext::LINK_STATUS)
+        .get_program_parameter(&program, GL::LINK_STATUS)
         .as_bool()
         .unwrap_or(false)
     {
@@ -278,11 +276,7 @@ pub fn link_program(
     }
 }
 
-fn compile_shader(
-    gl: &WebGlRenderingContext,
-    shader_type: u32,
-    source: &str,
-) -> Result<WebGlShader, String> {
+fn compile_shader(gl: &GL, shader_type: u32, source: &str) -> Result<WebGlShader, String> {
     let shader = gl
         .create_shader(shader_type)
         .ok_or_else(|| String::from("Error creating shader"))?;
@@ -290,7 +284,7 @@ fn compile_shader(
     gl.compile_shader(&shader);
 
     if gl
-        .get_shader_parameter(&shader, WebGlRenderingContext::COMPILE_STATUS)
+        .get_shader_parameter(&shader, GL::COMPILE_STATUS)
         .as_bool()
         .unwrap_or(false)
     {

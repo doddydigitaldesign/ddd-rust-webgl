@@ -1,6 +1,6 @@
 const rust = import('../pkg/ddd_rust_webgl');
 const canvas = document.getElementById('rust-canvas');
-const gl = canvas.getContext('webgl', { antialias: true });
+const gl = canvas.getContext('webgl2', { antialias: true });
 
 rust.then((m) => {
   if (!gl) {

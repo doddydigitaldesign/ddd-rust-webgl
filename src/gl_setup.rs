@@ -1,15 +1,15 @@
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen::JsValue;
-use web_sys::WebGlRenderingContext as GL;
+use web_sys::WebGl2RenderingContext as GL;
 use web_sys::*;
 
-pub fn initialize_webgl_context() -> Result<WebGlRenderingContext, JsValue> {
+pub fn initialize_webgl_context() -> Result<GL, JsValue> {
     let window = window().unwrap();
     let document = window.document().unwrap();
     let canvas = document.get_element_by_id("rust-canvas").unwrap();
     let canvas: web_sys::HtmlCanvasElement = canvas.dyn_into::<web_sys::HtmlCanvasElement>()?;
-    let gl: WebGlRenderingContext = canvas.get_context("webgl")?.unwrap().dyn_into()?;
+    let gl: GL = canvas.get_context("webgl2")?.unwrap().dyn_into()?;
 
     attach_mouse_down_handler(&canvas)?;
     attach_mouse_up_handler(&canvas)?;
