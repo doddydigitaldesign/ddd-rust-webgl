@@ -82,11 +82,11 @@ pub fn get_normal_vec(
     )
 }
 
-pub fn get_solved_equation(curr_time: f32, time_diff: f32) -> Vec<f32> {
+pub fn get_solved_equation(curr_time: f32, _time_diff: f32) -> Vec<f32> {
     let row_size = GRID_SIZE + 1;
     let mut y_values: Vec<f32> = vec![0.0; row_size.pow(2)];
     let half_grid: f32 = row_size as f32 / 2.0;
-    let dt = time_diff / 1000.0;
+    let _dt = _time_diff / 1000.0;
     let sin_offset: f32 = curr_time / 1000.0; //speed
 
     for z in 0..row_size {
@@ -97,9 +97,6 @@ pub fn get_solved_equation(curr_time: f32, time_diff: f32) -> Vec<f32> {
 
             y_values[y_index] =
                 Y_SCALE * ((scaled_x.powi(2) + scaled_z.powi(2)).sqrt() - sin_offset).sin();
-
-            // y_values[use_y_index] =
-            //     Y_SCALE * ((scaled_x.powi(2) + scaled_z.powi(2)).sqrt() - sin_offset).sin()
         }
     }
 
