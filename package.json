@@ -6,7 +6,8 @@
   "scripts": {
     "build": "webpack --mode production",
     "start": "webpack-dev-server --port 3000 --open",
-    "test": "cargo test && wasm-pack test --headless"
+    "test": "cargo test && wasm-pack test --headless",
+    "serve": "npx serve dist"
   },
   "devDependencies": {
     "@wasm-tool/wasm-pack-plugin": "0.4.2",

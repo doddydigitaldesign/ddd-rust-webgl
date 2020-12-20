@@ -1,5 +1,3 @@
-use crate::log;
-
 use super::constants::*;
 
 extern crate nalgebra;

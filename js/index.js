@@ -8,28 +8,26 @@ rust.then((m) => {
     return;
   }
 
-  const FPS_THROTTLE = 1000.0 / 60.0; // ms / fps
+  const FPS_THROTTLE = 8;
   const app = new m.App();
   let lastDrawTime = -1; // In milliseconds
 
   function render(elapsed) {
-    const currTime = elapsed;
-    const dt = currTime - lastDrawTime;
+    const dt = elapsed - lastDrawTime;
+
+    if (dt < FPS_THROTTLE) {
+      return;
+    }
 
     if (dt >= FPS_THROTTLE) {
-      lastDrawTime = currTime;
+      lastDrawTime = elapsed;
 
       if (
         window.innerHeight !== canvas.height ||
         window.innerWidth !== canvas.width
       ) {
         canvas.height = window.innerHeight;
-        // canvas.clientHeight = window.innerHeight;
-        // canvas.style.height = window.innerHeight;
-
         canvas.width = window.innerWidth;
-        // canvas.clientWidth = window.innerWidth;
-        // canvas.style.width = window.innerWidth;
 
         gl.viewport(0, 0, window.innerWidth, window.innerHeight);
       }

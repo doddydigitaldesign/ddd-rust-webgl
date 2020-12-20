@@ -1,6 +1,5 @@
 use wasm_bindgen::prelude::*;
 use web_sys::WebGl2RenderingContext as GL;
-use web_sys::*;
 
 use crate::{gl_setup, programs, state, util};
 
